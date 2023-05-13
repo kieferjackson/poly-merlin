@@ -11,6 +11,21 @@
   </head>
 
   <body>
-    <%= react_component("HelloWorld", {greeting: "Hello from react-rails."}) %>
+    <div class="container">
+      <%= react_component("CopolymerSeries", {
+          name: "PET Substitute", 
+          id: 1,
+          description: "It's a substitute for PET.", 
+          groupA: {
+            name: "Diester",
+            num: 2
+          },
+          groupB: {
+            name: "Diol",
+            num: 1
+          }
+        }) 
+      %>
+    </div>
   </body>
 </html>

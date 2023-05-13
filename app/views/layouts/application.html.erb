@@ -11,21 +11,37 @@
   </head>
 
   <body>
+    <nav class="top-navbar">
+      <div class="poly-merlin-logo"></div>
+      <a href="">PolyMerlin</a>
+      <button>Sign In</button>
+    </nav>
+    
     <div class="container">
-      <%= react_component("CopolymerSeries", {
-          name: "PET Substitute", 
-          id: 1,
-          description: "It's a substitute for PET.", 
-          groupA: {
-            name: "Diester",
-            num: 2
-          },
-          groupB: {
-            name: "Diol",
-            num: 1
-          }
-        }) 
-      %>
+      <%# Action Banner Section %>
+      <section class="action_banner">
+        <div class="dashboard_title">
+          Copolymer Series
+        </div>
+		<button>Create New Series</button>
+      </section>
+      <%# Copolymer Series Section %>
+      <section class="copolymers_series">
+        <%= react_component("CopolymerSeries", {
+            name: "PET Substitute", 
+            id: 1,
+            description: "It's a substitute for PET.", 
+            groupA: {
+              name: "Diester",
+              num: 2
+            },
+            groupB: {
+              name: "Diol",
+              num: 1
+            }
+          }) 
+        %>
+      </section>
     </div>
   </body>
 </html>

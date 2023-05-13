@@ -19,14 +19,11 @@
     
     <div class="container">
       <%# Action Banner Section %>
-      <section class="action_banner">
-        <div class="dashboard_title">
-          Copolymer Series
-        </div>
-		<button>Create New Series</button>
-      </section>
-      <%# Copolymer Series Section %>
-      <section class="copolymers_series">
+	    <%= react_component("ActionBanner") %>
+
+      <%# Dashboard Section %>
+      <section class="dashboard">
+        <%= react_component("Dashboard", { copolymer_series: ["Pet Substitute", "Nitrile"] }) %>
         <%= react_component("CopolymerSeries", {
             name: "PET Substitute", 
             id: 1,

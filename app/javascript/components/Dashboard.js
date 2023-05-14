@@ -1,10 +1,19 @@
 import React from "react"
 import PropTypes from "prop-types"
 import ActionBanner from "./ActionBanner";
+// Import Dashboards
+import { MAIN, CREATE_SERIES } from "./helpers/dashboard_pages";
+import Main from './dashboards/Main';
+import CreateSeries from './dashboards/CreateSeries';
 
-const dashboards = {
-  MAIN: 'Main',
-  CREATE_SERIES: 'Create New Series'
+function renderDashboard(dashboard)
+{
+  switch(dashboard)
+  {
+    case MAIN:          return <Main/>;
+    case CREATE_SERIES: return <CreateSeries/>;
+    default:            return <Main/>;
+  }
 }
 
 class Dashboard extends React.Component {
@@ -12,11 +21,9 @@ class Dashboard extends React.Component {
     super(props);
     
     this.state = {
-      dashboard: dashboards.MAIN
+      dashboard: MAIN
     }
     this.setDashboard = (action) => {
-      const { MAIN, CREATE_SERIES } = dashboards;
-      
       switch(action)
       {
         case MAIN:
@@ -37,6 +44,7 @@ class Dashboard extends React.Component {
             <ActionBanner { ...{ ...this.state, setDashboard: this.setDashboard } } />
             <div>
               {this.props.copolymer_series.map((series) => <div key={series}>{series}</div>)}
+              {renderDashboard(this.state.dashboard)}
             </div>
           </React.Fragment>
       );

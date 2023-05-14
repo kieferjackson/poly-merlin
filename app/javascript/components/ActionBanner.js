@@ -1,15 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types"
+import { MAIN, CREATE_SERIES } from "./helpers/dashboard_pages";
+
+function determineDashboardNav(current_dashboard)
+{
+  switch(current_dashboard)
+  {
+    case MAIN:          return CREATE_SERIES;
+    case CREATE_SERIES: return MAIN;
+    default:            return MAIN;
+  }
+}
 
 class ActionBanner extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      dashboard: 'Copolymer Series'
-    }
-  }
   render () {
     const { dashboard, setDashboard } = this.props;
+    const dashboardNav = determineDashboardNav(dashboard);
     
     return (
       <React.Fragment>
@@ -17,7 +23,7 @@ class ActionBanner extends React.Component {
 					<div className="dashboard_title">
             {dashboard}
 					</div>
-					<button onClick={() => setDashboard('Create New Series')}>Create New Series</button>
+					<button onClick={() => setDashboard(dashboardNav)}>{dashboardNav}</button>
 				</section>
       </React.Fragment>
     );

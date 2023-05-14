@@ -13,3 +13,18 @@
  *= require_tree .
  *= require_self
  */
+
+:root {
+    --merlin-blue: #2E54D9;
+    --merlin-teal: #94CDDA;
+    --merlin-green: #CCF5DA;
+    --transparent-white: #FFFFFFad;
+    --poly-gradient: radial-gradient(at top left, #2E54D9cc 0%, #94CDDA99 75%, #CCF5DAa3 100%);
+    --bg-light: #FFF;
+    --bg-dark: #333;
+}
+
+button {
+    color: var(--bg-light);
+    background-color: var(--merlin-blue);
+}

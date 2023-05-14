@@ -9,17 +9,23 @@ class ActionBanner extends React.Component {
     }
   }
   render () {
+    const { dashboard, setDashboard } = this.props;
+    
     return (
       <React.Fragment>
         <section className="action_banner">
 					<div className="dashboard_title">
-            {this.state.dashboard}
+            {dashboard}
 					</div>
-					<button onClick={() => this.setState({ ...this.state, dashboard: 'Create New Series' })}>Create New Series</button>
+					<button onClick={() => setDashboard('Create New Series')}>Create New Series</button>
 				</section>
       </React.Fragment>
     );
   }
 }
 
+ActionBanner.propTypes = {
+	dashboard: PropTypes.string,
+  setDashboard: PropTypes.func
+};
 export default ActionBanner

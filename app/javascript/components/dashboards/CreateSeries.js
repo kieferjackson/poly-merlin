@@ -23,16 +23,6 @@ class CreateSeries extends React.Component {
 		this.state = {
 			formData: {}
 		}
-		this.setMonomers = (groupType, name, monomers) => {
-			// Set monomers, grouped by functional groups
-			const updatedMonomers = { ...this.state.formData, 
-				[groupType]: name, 
-				[groupType + '_monomers']: monomers
-			};
-			
-			// Update form data with functional group and its monomer(s)
-			this.setState({ ...this.state, formData: updatedMonomers });
-		}
 		this.handleFormChange = (event) => {
 			const { name, value } = event.target;
 			const updatedFormFields = { ...this.state.formData, [name]: value };
@@ -99,17 +89,19 @@ class CreateSeries extends React.Component {
 							const  { [funcA]: funcGroupB, ...groupMonomersB } = funcGroupMonomers;
 
 							// Get set method for updating monomers in form data
-							const { setMonomers } = this;
+							const { handleFormChange } = this;
 
 							// Add field names to options object
 							const optionsFuncA = {
-								setMonomers,
-								funcGroupsData: groupMonomersA,
+								handleFormChange,
+								funcGroup: funcA,
+								funcGroupNames: Object.keys(groupMonomersA),
 								funcGroupLabel: funcgroup_a
 							};
 							const optionsFuncB = {
-								setMonomers,
-								funcGroupsData: groupMonomersB,
+								handleFormChange,
+								funcGroup: funcB,
+								funcGroupNames: Object.keys(groupMonomersB),
 								funcGroupLabel: funcgroup_b
 							};
 
@@ -141,48 +133,27 @@ class CreateSeries extends React.Component {
 }
 
 class FuncGroupDropdown extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			monomers: []
-		}
-		this.delimiter = '|';
-		this.handleMonomersChange = (event) => {
-			const { name, value } = event.target;
-			const { setMonomers } = this.props;
-			
-			const [ funcGroupName, monomerName ] = value.split(this.delimiter);
-			// Determine if monomer previously selected
-			const monomerSelected = this.state.monomers.indexOf(monomerName) > -1;
-			if (!monomerSelected) {
-				// Add monomer to list of monomers and update state for both this and parent component
-				const updatedMonomerList = this.state.monomers.push(monomerName);
-				this.setState({ ...this.state, monomers: updatedMonomerList })
-				setMonomers(name, funcGroupName, updatedMonomerList);
-			}
-		}
-	}
 	render () {
 		// Get functional group names from object keys
-		const { funcGroupsData, funcGroupLabel } = this.props;
-		const funcGroupNames = Object.keys(funcGroupsData);
-
+		const { handleFormChange, funcGroup, funcGroupNames, funcGroupLabel } = this.props;
+		const isFuncA = funcGroupLabel[funcGroupLabel.length - 1] == 'a';
+		
 		// Default dropdown option
-		const DEFAULT_OPTION = 'Select Item';
+		const DEFAULT_OPTION = 'Select Monomer';
 		
 		return (
 			<section className="monomer_selection" key={funcGroupLabel + '_monomer_selection'}>
 				<div className="input_block">
-					<label htmlFor={funcGroupLabel}>Select Monomer by Functional Group</label>
-					<select name={funcGroupLabel} id={funcGroupLabel} onChange={this.handleMonomersChange}>
-						{funcGroupNames.map((name) => 
-							<optgroup label={name} key={name}>
-								{funcGroupsData[name].map(monomer => {
-									const funcMonomer = name + this.delimiter + monomer;
-									return <option value={funcMonomer} key={funcMonomer}>{monomer}</option>
-								})}
-							</optgroup>
-						)}
+					<label htmlFor={funcGroupLabel}>Functional Group {isFuncA ? 'A' : 'B'}</label>
+					<select 
+						name={funcGroupLabel} 
+						id={funcGroupLabel} 
+						onChange={handleFormChange} 
+						defaultValue={DEFAULT_OPTION}
+						value={funcGroup}
+					>
+						<option disabled="disabled" value={DEFAULT_OPTION} >{DEFAULT_OPTION}</option>
+						{funcGroupNames.map((funcGroupName, i) => <option value={funcGroupName} key={funcGroupName + i}>{funcGroupName}</option>)}
 					</select>
 				</div>
 			</section>
@@ -190,8 +161,9 @@ class FuncGroupDropdown extends React.Component {
 	}
 }
 FuncGroupDropdown.propTypes = {
-	setMonomers: PropTypes.func,
-	funcGroupsData: PropTypes.object,
+	handleFormChange: PropTypes.func,
+	funcGroup: PropTypes.string,
+	funcGroupNames: PropTypes.array,
 	funcGroupLabel: PropTypes.string
 };
 

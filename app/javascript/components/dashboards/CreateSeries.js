@@ -112,6 +112,46 @@ class CreateSeries extends React.Component {
 								</div>
 							)
 						})()}
+
+						{(() => {
+							// Get selected functional groups
+							const funcA = formData[funcgroup_a];
+							const funcB = formData[funcgroup_b];
+
+							// Check that functional groups have been selected
+							if ((funcA !== 'Select Group' && funcA !== undefined) && (funcB !== 'Select Group' && funcB !== undefined)) {
+								// Get set method for updating monomers in form data
+								const { handleFormChange } = this;
+
+								// Add field names to options object
+								const optionsMonomersA = {
+									handleFormChange,
+									comonomerOptions: funcGroupMonomers[funcA],
+									options: {
+										funcGroup: funcA,
+										comonomerLabel: funcgroup_a + '_comonomers'
+									}
+								};
+								const optionsMonomersB = {
+									handleFormChange,
+									comonomerOptions: funcGroupMonomers[funcB],
+									options: {
+										funcGroup: funcB,
+										comonomerLabel: funcgroup_b + '_comonomers'
+									}
+								};
+								
+								return (
+									<div>
+										<ComonomerDropdown { ...optionsMonomersA } />
+										<ComonomerDropdown { ...optionsMonomersB } />
+									</div>
+								)
+							}
+							else {
+								return '';
+							}
+						})()}
 						
 
 						<button
@@ -139,7 +179,7 @@ class FuncGroupDropdown extends React.Component {
 		const isFuncA = funcGroupLabel[funcGroupLabel.length - 1] == 'a';
 		
 		// Default dropdown option
-		const DEFAULT_OPTION = 'Select Monomer';
+		const DEFAULT_OPTION = 'Select Group';
 		
 		return (
 			<section className="monomer_selection" key={funcGroupLabel + '_monomer_selection'}>
@@ -166,5 +206,52 @@ FuncGroupDropdown.propTypes = {
 	funcGroupNames: PropTypes.array,
 	funcGroupLabel: PropTypes.string
 };
+
+class ComonomerDropdown extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			selectedMonomer: '',							// Stores name of monomer selected
+			remainingMonomers: this.props.comonomerOptions	// Stores comonomers not selected
+		}
+		this.handleMonomerChange = (event) => {
+			// Remove monomer from remaining options
+			const { remainingMonomers: currentMonomersRemaining } = this.state;
+			const monomerIndex = currentMonomersRemaining.indexOf(event.target.value);
+			const remainingMonomers = currentMonomersRemaining.splice(monomerIndex, 1);
+
+			// Update remaining monomers and form fields
+			this.setState({ ...this.state, remainingMonomers });
+			this.props.handleFormChange(event);
+		}
+	}
+	render () {
+		const { comonomerOptions } = this.props;
+		const { funcGroup, comonomerLabel } = this.props.options;
+		
+		const DEFAULT_OPTION = 'Select Comonomer';
+
+		return (
+			<div className="input_block" key={funcGroup + '_monomers'}>
+				<label htmlFor={comonomerLabel}>Comonomer</label>
+				<select 
+					name={comonomerLabel} 
+					id={comonomerLabel} 
+					onChange={this.handleMonomerChange} 
+					defaultValue={DEFAULT_OPTION}
+					value={this.state.selectedMonomer}
+				>
+					<option disabled="disabled" value={DEFAULT_OPTION} >{DEFAULT_OPTION}</option>
+					{comonomerOptions.map((monomer, i) => <option value={monomer} key={`${funcGroup}_${monomer}-${i}`}>{monomer}</option>)}
+				</select>
+			</div>
+		);
+	}
+}
+ComonomerDropdown.propTypes = {
+	handleFormChange: PropTypes.func,
+	comonomerOptions: PropTypes.array,
+	options: PropTypes.object
+}
 
 export default CreateSeries

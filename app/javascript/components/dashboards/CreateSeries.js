@@ -24,8 +24,10 @@ class CreateSeries extends React.Component {
 			formData: {},
 			remainingMonomers: {}
 		}
+		this.delimiter = '|';
 		this.handleFormChange = (event) => {
 			const { name, value } = event.target;
+			const { formData } = this.state;
 			
 			switch(name)
 			{
@@ -34,7 +36,7 @@ class CreateSeries extends React.Component {
 					const monomers_field_name = name + '_monomers';
 					this.setState({ ...this.state, 
 						formData: { 
-							...this.state.formData, 
+							...formData, 
 							[name]: value,
 							[monomers_field_name]: []
 						},
@@ -47,12 +49,11 @@ class CreateSeries extends React.Component {
 					break;
 				case 'funcgroup_a_monomers':
 				case 'funcgroup_b_monomers':
-					const { formData, remainingMonomers } = this.state;
 					// Get selected comonomers and update remaining monomers object
 					const comonomers = formData[name] ? formData[name] : [];
 					
 					// Create update object by first copying current monomers then removing selected monomer
-					const updatedMonomersRemaining = [ ...remainingMonomers[name] ];
+					const updatedMonomersRemaining = [ ...this.state.remainingMonomers[name] ];
 					const monomerIndex = updatedMonomersRemaining.indexOf(value);
 					updatedMonomersRemaining.splice(monomerIndex, 1);
 
@@ -62,13 +63,37 @@ class CreateSeries extends React.Component {
 							[name]: [ ...comonomers, value ]
 						},
 						remainingMonomers: {
-							...remainingMonomers,
+							...this.state.remainingMonomers,
 							[name]: updatedMonomersRemaining
 						} 
 					});
 					break;
+				case 'funcgroup_a_monomers' + this.delimiter + 'remove':
+				case 'funcgroup_b_monomers' + this.delimiter + 'remove':
+					const [ funcgroup_fieldname ] = name.split(this.delimiter);
+					
+					// Get selected comonomers and index of monomer to remove
+					const selectedComonomers = [ ...formData[funcgroup_fieldname] ];
+					const remainingMonomers = [ ...this.state.remainingMonomers[funcgroup_fieldname] ];
+					const monomerToRemove = selectedComonomers.indexOf(value);
+					
+					// Remove monomer from list and add back to available options
+					selectedComonomers.splice(monomerToRemove, 1);
+					remainingMonomers.push(value);
+					
+					this.setState({ ...this.state, 
+						formData: { 
+							...formData, 
+							[funcgroup_fieldname]: selectedComonomers
+						},
+						remainingMonomers: {
+							...this.state.remainingMonomers,
+							[funcgroup_fieldname]: remainingMonomers
+						} 
+					});
+					break;
 				default:
-					const updatedFormFields = { ...this.state.formData, [name]: value };
+					const updatedFormFields = { ...formData, [name]: value };
 					this.setState({ ...this.state, formData: updatedFormFields });
 					break;
 			}
@@ -177,12 +202,13 @@ class CreateSeries extends React.Component {
 								const monomerOptionsB = this.state.remainingMonomers[funcgroup_b_monomers];
 								
 								// Get set method for updating monomers in form data
-								const { handleFormChange } = this;
+								const { handleFormChange, delimiter } = this;
 
 								const createMonomerProps = (funcGroup, comonomerLabel, comonomers) => ({
 									funcGroup,
 									comonomerLabel,
-									comonomers
+									comonomers,
+									delimiter
 								});
 
 								// Create props for Functional Group A Monomers
@@ -271,6 +297,8 @@ class ComonomerDropdown extends React.Component {
 			// Stores name of monomer selected
 			selectedMonomer: this.props.comonomerOptions[0]
 		}
+		this.delimiter = '|';
+		this.DEFAULT_OPTION = 'Select Comonomer';
 		this.handleMonomerChange = (event) => {
 			// Update the selected monomer based on the dropdown's current value
 			this.setState({ ...this.state, selectedMonomer: event.target.value });
@@ -279,31 +307,53 @@ class ComonomerDropdown extends React.Component {
 			// Prevent the page from reloading upon button click
 			e.preventDefault();
 
-			// Update the selected monomer to the next available option
+			// Only add monomer if default not selected
+			const { selectedMonomer } = this.state;
+			if (selectedMonomer !== this.DEFAULT_OPTION) {
+				// Update the selected monomer to the next available option
+				const { comonomerOptions } = this.props;
+				const selectedMonomerIndex = comonomerOptions.indexOf(selectedMonomer);
+
+				const nextOption = comonomerOptions.length > 1 && selectedMonomerIndex === 0
+					? comonomerOptions[selectedMonomerIndex + 1]
+					: comonomerOptions.length > 1 && selectedMonomerIndex > 0 
+						? comonomerOptions[0] 
+						: this.DEFAULT_OPTION;
+				this.setState({ ...this.state, selectedMonomer: nextOption });
+
+				// Update remaining monomers and form fields
+				this.props.handleFormChange({ 
+					target: {
+						name: this.props.options.comonomerLabel, 
+						value: selectedMonomer
+					}
+				});
+			}
+		}
+		this.removeMonomer = (e) => {
+			// Prevent the page from reloading upon button click
+			e.preventDefault();
+
 			const { comonomerOptions } = this.props;
-			const selectedMonomerIndex = comonomerOptions.indexOf(this.state.selectedMonomer);
+			const { comonomerLabel, delimiter } = this.props.options
 
-			const nextOption = comonomerOptions.length > 1 && selectedMonomerIndex === 0
-				? comonomerOptions[selectedMonomerIndex + 1]
-				: comonomerOptions.length > 1 && selectedMonomerIndex > 0 
-					? comonomerOptions[0] 
-					: 'Select Comonomer';
+			// Get next selectable option for dropdown
+			const nextOption = comonomerOptions.length === 0 ? e.target.name : comonomerOptions[0];
 			this.setState({ ...this.state, selectedMonomer: nextOption });
-
+			
 			// Update remaining monomers and form fields
 			this.props.handleFormChange({ 
 				target: {
-					name: this.props.options.comonomerLabel, 
-					value: this.state.selectedMonomer
+					name: comonomerLabel + delimiter + 'remove', 
+					value: e.target.name
 				}
 			});
 		}
 	}
 	render () {
+		const { DEFAULT_OPTION } = this;
 		const { comonomerOptions } = this.props;
 		const { funcGroup, comonomerLabel, comonomers } = this.props.options;
-		
-		const DEFAULT_OPTION = 'Select Comonomer';
 
 		return (
 			<div className="input_block" key={funcGroup + '_monomers'}>
@@ -327,7 +377,7 @@ class ComonomerDropdown extends React.Component {
 				</button>
 
 				<div className="comonomer_display">
-					{comonomers.map(monomer => <div key={`${funcGroup}_${monomer}`}>{monomer}</div>)}
+					{comonomers.map(monomer => <button key={`${funcGroup}_${monomer}`} name={monomer} onClick={this.removeMonomer}>{monomer}</button>)}
 				</div>
 			</div>
 		);

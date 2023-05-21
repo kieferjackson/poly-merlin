@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import CreateMonomer from "../CreateMonomer";
 
 /*** TEST VARIABLES ***/
 const funcGroupMonomers = {
@@ -349,6 +350,13 @@ class ComonomerDropdown extends React.Component {
 				}
 			});
 		}
+		this.displayMonomerCreationModal = (e) => {
+			// Prevent the page from reloading upon button click
+			e.preventDefault();
+			// Display modal menu to create new monomer
+			const createMonomerModal = document.getElementById(this.props.options.funcGroup + '_create_monomer_modal');
+			createMonomerModal.showModal();
+		}
 	}
 	render () {
 		const { DEFAULT_OPTION } = this;
@@ -375,6 +383,11 @@ class ComonomerDropdown extends React.Component {
 				>
 					Add Selected
 				</button>
+				<button onClick={this.displayMonomerCreationModal} >
+					Create & Add Monomer
+				</button>
+
+				<CreateMonomer { ...{ dialog_id: funcGroup + '_create_monomer_modal' } } />
 
 				<div className="comonomer_display">
 					{comonomers.map(monomer => <button key={`${funcGroup}_${monomer}`} name={monomer} onClick={this.removeMonomer}>{monomer}</button>)}

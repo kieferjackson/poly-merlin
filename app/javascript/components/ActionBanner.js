@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types"
-import { MAIN, CREATE_SERIES } from "./helpers/dashboard_pages";
+import { MAIN, CREATE_SERIES } from "./utils/dashboard_pages";
 
 function determineDashboardNav(current_dashboard)
 {

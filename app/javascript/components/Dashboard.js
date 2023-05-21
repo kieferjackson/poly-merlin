@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import ActionBanner from "./ActionBanner";
 // Import Dashboards
-import { MAIN, CREATE_SERIES } from "./helpers/dashboard_pages";
+import { MAIN, CREATE_SERIES } from "./utils/dashboard_pages";
 import Main from './dashboards/Main';
 import CreateSeries from './dashboards/CreateSeries';
 

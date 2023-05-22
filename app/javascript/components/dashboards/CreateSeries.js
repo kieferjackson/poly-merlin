@@ -142,17 +142,15 @@ class CreateSeries extends React.Component {
 						</div>
 
 						<div className="input_block">
-							<label>
-								Description
-								<textarea
-									value={formData[series_description]}
-									onChange={this.handleFormChange}
-									placeholder={`e.g. 'Excellent thermomechanical properties up to 130 C'`}
-									name={series_description}
-									className="input_field string"
-								>
-								</textarea>
-							</label>
+							<label>Description</label>
+							<textarea
+								value={formData[series_description]}
+								onChange={this.handleFormChange}
+								placeholder={`e.g. 'Excellent thermomechanical properties up to 130 C'`}
+								name={series_description}
+								className="input_field string"
+							>
+							</textarea>
 						</div>
 
 						<h2>Define Functional Groups</h2>
@@ -377,6 +375,7 @@ class ComonomerDropdown extends React.Component {
 				</select>
 
 				<button 
+					className="add_selected_monomer_btn"
 					onClick={this.addSelectedMonomer} 
 					disabled={comonomerOptions.length === 0} 
 					style={comonomerOptions.length === 0 ? { backgroundColor: 'red' }: {}}
@@ -390,7 +389,7 @@ class ComonomerDropdown extends React.Component {
 				<CreateMonomer { ...{ dialog_id: funcGroup + '_create_monomer_modal' } } />
 
 				<div className="comonomer_display">
-					{comonomers.map(monomer => <button key={`${funcGroup}_${monomer}`} name={monomer} onClick={this.removeMonomer}>{monomer}</button>)}
+					{comonomers.map(monomer => <button className="comonomer_btn" key={`${funcGroup}_${monomer}`} name={monomer} onClick={this.removeMonomer}>{monomer}</button>)}
 				</div>
 			</div>
 		);

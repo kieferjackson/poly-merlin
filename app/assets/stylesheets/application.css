@@ -28,3 +28,19 @@ button {
     color: var(--bg-light);
     background-color: var(--merlin-blue);
 }
+
+.add_selected_monomer_btn {
+    color: var(--bg-dark);
+    background-color: var(--merlin-green);
+}
+
+.comonomer_btn {
+    color: var(--merlin-blue);
+    background-color: var(--bg-light);
+}
+
+dialog:modal {
+    padding: 2em;
+    border: none;
+    border-radius: 1em;
+}

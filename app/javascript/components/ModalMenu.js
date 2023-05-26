@@ -3,17 +3,9 @@ import PropTypes from "prop-types"
 class ModalMenu extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = Object.keys(this.props.formFields).reduce((fields, fieldName) => {
-			const { defaultValue } = this.props.formFields[fieldName];
-			fields[fieldName] = defaultValue;
-
-			return fields;
-		}, {});
+		this.state = Object.keys(this.props.formFields).reduce((fields, fieldName) => ({ ...fields, [fieldName]: '' }), {});
 		this.getModal = () => document.getElementById(this.props.dialog_id);
-		this.handleFormChange = (event) => {
-			const { name, value } = event.target;
-			this.setState({ ...this.state, [name]: value });
-		}
+		this.handleFormChange = this.props.handleFormChange.bind(this);
 		this.handleClose = (e) => {
 			// Prevent the page from reloading upon button click
 			e.preventDefault();

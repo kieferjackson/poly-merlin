@@ -13,6 +13,10 @@ class Main extends React.Component {
             formFields: {
               'Text Field': { type: 'text', className: 'input_field string' }, 
               'Number Field': { type: 'text', inputMode: 'decimal', pattern: '[0-9]', className: 'input_field float' }
+            },
+            handleFormChange: function (event) {
+              const { name, value } = event.target;
+              this.setState({ ...this.state, [name]: value });
             }
           } } />
         </div>

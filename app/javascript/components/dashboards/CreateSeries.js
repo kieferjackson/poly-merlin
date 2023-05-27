@@ -93,6 +93,26 @@ class CreateSeries extends React.Component {
 						} 
 					});
 					break;
+				case 'create' + this.delimiter + 'funcgroup_a_monomers':
+				case 'create' + this.delimiter + 'funcgroup_b_monomers':
+					const monomers_fieldname = name.split(this.delimiter)[1];
+					
+					// Get current and remaining monomers
+					const currentComonomers = [ ...formData[monomers_fieldname] ];
+					
+					// Add the newly created monomer to the list of selected comonomers, and to a separate field that monitors the monomers to create
+					currentComonomers.push(value['Monomer Name']);
+					const create_fieldname = monomers_fieldname + '_to_create';
+					const monomersToCreate = formData[create_fieldname] ? [ ...formData[create_fieldname], value ] : [ value ];
+					
+					this.setState({ ...this.state, 
+						formData: { 
+							...formData, 
+							[monomers_fieldname]: currentComonomers,
+							[create_fieldname]: monomersToCreate
+						}
+					});
+					break;
 				default:
 					const updatedFormFields = { ...formData, [name]: value };
 					this.setState({ ...this.state, formData: updatedFormFields });
@@ -298,6 +318,7 @@ class ComonomerDropdown extends React.Component {
 		}
 		this.delimiter = '|';
 		this.DEFAULT_OPTION = 'Select Comonomer';
+		this.monomer_modal_id = this.props.options.funcGroup + '_create_monomer_modal';
 		this.handleMonomerChange = (event) => {
 			// Update the selected monomer based on the dropdown's current value
 			this.setState({ ...this.state, selectedMonomer: event.target.value });
@@ -348,16 +369,9 @@ class ComonomerDropdown extends React.Component {
 				}
 			});
 		}
-		this.displayMonomerCreationModal = (e) => {
-			// Prevent the page from reloading upon button click
-			e.preventDefault();
-			// Display modal menu to create new monomer
-			const createMonomerModal = document.getElementById(this.props.options.funcGroup + '_create_monomer_modal');
-			createMonomerModal.showModal();
-		}
 	}
 	render () {
-		const { DEFAULT_OPTION } = this;
+		const { DEFAULT_OPTION, monomer_modal_id } = this;
 		const { comonomerOptions } = this.props;
 		const { funcGroup, comonomerLabel, comonomers } = this.props.options;
 
@@ -382,11 +396,17 @@ class ComonomerDropdown extends React.Component {
 				>
 					Add Selected
 				</button>
-				<button onClick={this.displayMonomerCreationModal} >
-					Create & Add Monomer
-				</button>
 
-				<CreateMonomer { ...{ dialog_id: funcGroup + '_create_monomer_modal' } } />
+				<CreateMonomer { ...{ dialog_id: monomer_modal_id, updateMonomerOptions: (new_monomer) => {
+					// Parse the new monomer to get its given name and molar mass
+					const monomer_data = JSON.parse(new_monomer);
+					
+					// Add the monomer to set of selected monomers
+					this.props.handleFormChange({ target: {
+						name: 'create' + this.delimiter + comonomerLabel,
+						value: monomer_data
+					} })
+				} } } />
 
 				<div className="comonomer_display">
 					{comonomers.map(monomer => <button className="comonomer_btn" key={`${funcGroup}_${monomer}`} name={monomer} onClick={this.removeMonomer}>{monomer}</button>)}

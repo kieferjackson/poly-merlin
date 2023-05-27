@@ -15,30 +15,31 @@ class ModalMenu extends React.Component {
 				this.getModal().close('');
 			}
 			else if (e.target.type === 'submit') {
-				// Get the modal's return value
-				console.log(this.getModal().returnValue);
+				// Submit return value
+				console.log(`The modal (${this.props.modalTitle}) was closed and set to submit.`);
 			}
 		}
 		this.handleSubmit = (e) => {
 			// Prevent the page from reloading upon button click
 			e.preventDefault();
-
+			
 			// Get the modal element and close it, returning the form data contained in the state
 			this.getModal().close(e.target.value);
+			this.props.submitAction(e.target.value);
 		}
 		this.displayModal = (e) => {
 			// Prevent the page from reloading upon button click
 			e.preventDefault();
 			// Display modal menu
-			const modalEl = this.getModal();
-			modalEl.showModal();
+			this.getModal().showModal();
 		}
 	}
 	render() {
 		return (
 			<React.Fragment>
-				<button onClick={this.displayModal}>Show</button>
+				<button onClick={this.displayModal}>{this.props.showBtnText}</button>
 				<dialog id={this.props.dialog_id}>
+					<strong className="modal-title">{this.props.modalTitle}</strong>
 					{Object.keys(this.props.formFields).map(fieldName => {
 						return (
 							<div className="input_block" key={this.props.dialog_id + fieldName}>
@@ -56,15 +57,14 @@ class ModalMenu extends React.Component {
 			</React.Fragment>
 		);
 	}
-	getReturnValue () {
-		console.log('The test function was called!!!');
-		return 'test';
-	}
 }
 
 ModalMenu.propTypes = {
 	dialog_id: PropTypes.string,
+	modalTitle: PropTypes.string,
+	showBtnText: PropTypes.string,
 	formFields: PropTypes.object,
+	submitAction: PropTypes.func,
 	handleFormChange: PropTypes.func
 };
 export default ModalMenu

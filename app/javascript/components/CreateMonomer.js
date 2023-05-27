@@ -21,12 +21,18 @@ class CreateMonomer extends React.Component {
 		super(props);
 	}
 	render() {
-		const { dialog_id } = this.props;
+		const { dialog_id, updateMonomerOptions } = this.props;
+		const [ funcGroup ] = dialog_id.split('_');
 		return (
 			<React.Fragment>
-				<ModalMenu { ...{ dialog_id, formFields, handleFormChange: function ({ target }) {
+				<ModalMenu { ...{ dialog_id, 
+					modalTitle: funcGroup + ' - Add Monomer', 
+					showBtnText: 'Create & Add Monomer',
+					formFields, 
+					submitAction: updateMonomerOptions,
+					handleFormChange: function ({ target }) {
 					const { name, value } = target;
-					if (name === formFields.molar_mass) {
+					if (name === 'Molar Mass') {
 						// Check that molar mass only contains numeric characters
 						const molar_mass_value = isValidDecimal(value) ? value : (() => {
 							// Remove invalid character and return cleaned string
@@ -45,7 +51,8 @@ class CreateMonomer extends React.Component {
 	}
 }
 CreateMonomer.propTypes = {
-	dialog_id: PropTypes.string
+	dialog_id: PropTypes.string,
+	updateMonomerOptions: PropTypes.func
 }
 
 export default CreateMonomer

@@ -1,28 +1,22 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ModalMenu from "../ModalMenu";
+import CopolymerSeries from "../CopolymerSeries";
 
 class Main extends React.Component {
   render () {
+    const { setDashboard } = this.props;
+    debugger;
     return (
       <React.Fragment>
-        <div>
-          THIS WOULD BE MAIN. NOT A WHOLE LOT RIGHT NOW.
-          <ModalMenu { ...{ 
-            dialog_id: 'test_modal',
-            formFields: {
-              'Text Field': { type: 'text', className: 'input_field string' }, 
-              'Number Field': { type: 'text', inputMode: 'decimal', pattern: '[0-9]', className: 'input_field float' }
-            },
-            handleFormChange: function (event) {
-              const { name, value } = event.target;
-              this.setState({ ...this.state, [name]: value });
-            }
-          } } />
-        </div>
+        {this.props.series_data.map(series => <CopolymerSeries { ...{ series_data: series, setDashboard } } key={series.name} />)}
       </React.Fragment>
     );
   }
 }
 
+Main.propTypes = {
+  series_data: PropTypes.array,
+  setDashboard: PropTypes.func
+};
 export default Main

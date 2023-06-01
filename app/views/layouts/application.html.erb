@@ -18,6 +18,8 @@
     </nav>
     
     <div class="container">
+      <%# User Info %>
+      <p><%= @user.username %></p>
       <%# Dashboard Section %>
       <section class="dashboard">
         <%= react_component("Dashboard", { copolymer_series: ["Pet Substitute", "Nitrile"] }) %>

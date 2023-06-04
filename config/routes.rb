@@ -2,8 +2,16 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
-  root :to => "monomers#index"
+  root :to => "copolymer_series#index"
 
+  # Miscellaneous/Testing Routes
   get "/monomers", to: "monomers#index"
-  resources :users
+
+  # Copolymer Series Routes
+  resources :copolymer_series
+
+  # User Routes
+  resources :users, only: [:new, :create, :edit, :update, :show, :destroy]
+  get "/signup", to: "users#new"
+  get "/login", to: "users#login"
 end

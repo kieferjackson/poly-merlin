@@ -14,4 +14,8 @@ Rails.application.routes.draw do
   resources :users, only: [:new, :create, :edit, :update, :show, :destroy]
   get "/signup", to: "users#new"
   get "/login", to: "users#login"
+
+  # Session Routes
+  post "/login", to: "sessions#create"
+  delete "logout", to: "sessions#destroy"
 end

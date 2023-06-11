@@ -14,7 +14,13 @@
     <nav class="top-navbar">
       <div class="poly-merlin-logo"></div>
       <a href="">PolyMerlin</a>
-      <button>Sign In</button>
+      <% if current_user %>
+        Logged in as: <%= current_user.username %>
+        <%= button_to 'Logout', logout_path, method: :delete %>
+        <% else %>
+        <%= link_to 'Sign Up', signup_path %>
+        <%= link_to 'Login', login_path %>
+      <% end %>
     </nav>
     
     <div class="container">

@@ -119,6 +119,9 @@ class CreateSeries extends React.Component {
 					break;
 			}
 		}
+		this.handleFormChange = () => {
+			// TODO: Create form handler for submit function
+		}
 	}
 	render() {
 		const { 
@@ -131,7 +134,8 @@ class CreateSeries extends React.Component {
 		return (
 			<React.Fragment>
 				<div className="form_container">
-					<form id="create_new_series">
+					<form id="create_new_series" role='form' acceptCharset="UTF-8" action='/copolymer_series/new' method='post'>
+						<input type='hidden' name='authenticity_token' value={this.props.auth_token} />
 						<h1>Create New Copolymer Series</h1>
 						<section className="percent_type">
 							<label>
@@ -265,13 +269,16 @@ class CreateSeries extends React.Component {
 						</button>
 
 						<div className="submit_container">
-							<button type="button" onClick={() => 2} id="initial_submit" className="submit_button">Submit</button>
+							<button type="submit" onClick={this.handleFormSubmit} id="initial_submit" className="submit_button">Submit</button>
 						</div>
 					</form>
 				</div>
 			</React.Fragment>
 		);
 	}
+}
+CreateSeries.propTypes = {
+	auth_token: PropTypes.string
 }
 
 class FuncGroupDropdown extends React.Component {

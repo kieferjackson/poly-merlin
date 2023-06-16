@@ -1,2 +1,6 @@
 <h1>CopolymerSeries#index</h1>
-<%= react_component("Dashboard", { copolymer_series: ["Pet Substitute", "Nitrile"] }) %>
+<%= react_component("Dashboard", { 
+    copolymer_series: ["Pet Substitute", "Nitrile"], 
+    create_series_auth_token: form_authenticity_token,
+    create_copolymer_auth_token: form_authenticity_token
+}) %>

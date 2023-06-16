@@ -93,6 +93,10 @@ class Dashboard extends React.Component {
       dashboard: MAIN,
       selectedSeries: {}
     }
+    this.refs = {
+      create_series_auth_token: this.props.create_series_auth_token,
+      create_copolymer_auth_token: this.props.create_copolymer_auth_token
+    }
     this.setDashboard = (action, data = null) => {
       switch(action)
       {
@@ -119,8 +123,8 @@ class Dashboard extends React.Component {
       switch(dashboard)
       {
         case MAIN:          return <Main { ...{ series_data: copolymer_series_data, setDashboard: this.setDashboard} } />;
-        case CREATE_SERIES: return <CreateSeries/>;
-        case DEFINE_SERIES: return <DefineSeries { ...{ selectedSeries: this.state.selectedSeries } } />
+        case CREATE_SERIES: return <CreateSeries { ...{ auth_token: this.refs.create_series_auth_token }} />;
+        case DEFINE_SERIES: return <DefineSeries { ...{ selectedSeries: this.state.selectedSeries, auth_token: this.refs.create_copolymer_auth_token } } />
         default:            return <Main/>;
       }
     }

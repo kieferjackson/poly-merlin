@@ -10,18 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_11_210237) do
+ActiveRecord::Schema[7.0].define(version: 2023061120442200) do
   create_table "copolymer_series", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.string "percent_type"
-    t.integer "func_group_a_id"
-    t.integer "func_group_b_id"
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["func_group_a_id"], name: "index_copolymer_series_on_func_group_a_id"
-    t.index ["func_group_b_id"], name: "index_copolymer_series_on_func_group_b_id"
     t.index ["user_id"], name: "index_copolymer_series_on_user_id"
   end
 
@@ -42,7 +38,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_11_210237) do
   end
 
   add_foreign_key "copolymer_series", "users"
-  add_foreign_key "copolymer_series", "users", column: "func_group_a_id"
-  add_foreign_key "copolymer_series", "users", column: "func_group_b_id"
   add_foreign_key "func_groups", "users"
 end

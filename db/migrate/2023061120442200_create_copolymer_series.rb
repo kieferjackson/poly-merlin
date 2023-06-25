@@ -11,7 +11,7 @@ class CreateCopolymerSeries < ActiveRecord::Migration[7.0]
       t.timestamps
     end
     # Relate copolymer series to its given functional groups
-    add_foreign_key :copolymer_series, :users, column: :func_group_a_id, primary_key: :id
-    add_foreign_key :copolymer_series, :users, column: :func_group_b_id, primary_key: :id
+    add_foreign_key :copolymer_series, :func_groups
+    add_foreign_key :copolymer_series, :func_groups
   end
 end
